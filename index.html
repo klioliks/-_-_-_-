@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ольга — моя первая визитка</title>
+
+  <!-- Шрифты: тёплый serif для заголовков, мягкий sans для текста -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Мягкое свечение, которое следует за курсором -->
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <!-- Чернильное растение: на компьютере распускается при прокрутке -->
+  <div class="scroll-flowers" id="scrollFlowers" aria-hidden="true">
+    <div class="vine-frame">
+      <div class="vine-art">
+      <!-- Ваш рисунок — чернильная основа (стебель, листья, бутоны) -->
+      <img
+        src="images/plant-vine.png"
+        alt=""
+        class="vine-art__ink"
+        width="408"
+        height="616"
+      >
+
+      <!-- Красные лепестки поверх цветков — появляются при прокрутке -->
+      <svg class="vine-art__blooms" viewBox="0 0 408 616" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Верхний цветок-бутон (как на рисунке) -->
+        <g class="flower flower--1" transform="translate(196, 128)">
+          <g class="flower__bloom">
+            <path d="M0 -16 L6 -3 L0 12 L-6 -3 Z" fill="#c0392b" stroke="#8b1a1a" stroke-width="0.6"/>
+            <path d="M0 -16 L6 -3 L0 12 L-6 -3 Z" fill="#d64541" stroke="#8b1a1a" stroke-width="0.6" transform="rotate(72)"/>
+            <path d="M0 -16 L6 -3 L0 12 L-6 -3 Z" fill="#b83232" stroke="#8b1a1a" stroke-width="0.6" transform="rotate(144)"/>
+            <path d="M0 -16 L6 -3 L0 12 L-6 -3 Z" fill="#c0392b" stroke="#8b1a1a" stroke-width="0.6" transform="rotate(216)"/>
+            <path d="M0 -16 L6 -3 L0 12 L-6 -3 Z" fill="#d64541" stroke="#8b1a1a" stroke-width="0.6" transform="rotate(288)"/>
+            <circle cx="0" cy="0" r="3" fill="#8b1a1a"/>
+          </g>
+        </g>
+
+        <!-- Нижний крупный цветок-лилия (как на рисунке) -->
+        <g class="flower flower--2" transform="translate(212, 352)">
+          <g class="flower__bloom">
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#c0392b" stroke="#7a1515" stroke-width="0.7"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#d64541" stroke="#7a1515" stroke-width="0.7" transform="rotate(45)"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#b83232" stroke="#7a1515" stroke-width="0.7" transform="rotate(90)"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#c0392b" stroke="#7a1515" stroke-width="0.7" transform="rotate(135)"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#e74c3c" stroke="#7a1515" stroke-width="0.7" transform="rotate(180)"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#d64541" stroke="#7a1515" stroke-width="0.7" transform="rotate(225)"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#c0392b" stroke="#7a1515" stroke-width="0.7" transform="rotate(270)"/>
+            <path d="M0 -32 L8 -9 L4 16 L-4 16 L-8 -9 Z" fill="#b83232" stroke="#7a1515" stroke-width="0.7" transform="rotate(315)"/>
+            <circle cx="0" cy="2" r="5" fill="#8b1a1a"/>
+          </g>
+        </g>
+      </svg>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+
+    <!-- ===== 1. Главный экран ===== -->
+    <section class="hero">
+      <div class="hero__text fade-in">
+        <p class="hero__greeting">Привет, я Ольга 👋</p>
+
+        <h1 class="hero__slogan">
+          Я учусь вайб-кодить и превращаю свои идеи в первые живые страницы.
+        </h1>
+
+        <p class="hero__subtitle">
+          Это моя первая пробная работа — маленький, но важный шаг в мир кода,
+          дизайна и творческих экспериментов.
+        </p>
+
+        <a href="#about" class="btn btn--primary" id="scrollBtn">
+          Посмотреть мою первую работу
+        </a>
+      </div>
+
+      <div class="hero__photo fade-in fade-in--delay">
+        <div class="photo-card">
+          <div class="photo-card__glow"></div>
+          <img
+            src="images/olga-portrait.png"
+            alt="Портрет Ольги"
+            class="photo-card__img"
+            width="480"
+            height="600"
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. Три карточки ===== -->
+    <section class="cards" aria-label="Мой путь">
+      <article class="card fade-in-up">
+        <h2 class="card__title">Учусь</h2>
+        <p class="card__text">
+          Осваиваю vibe coding и постепенно понимаю, как идеи превращаются в сайты.
+        </p>
+      </article>
+
+      <article class="card fade-in-up fade-in-up--delay-1">
+        <h2 class="card__title">Пробую</h2>
+        <p class="card__text">
+          Экспериментирую с цветами, текстами, композицией и настроением страницы.
+        </p>
+      </article>
+
+      <article class="card fade-in-up fade-in-up--delay-2">
+        <h2 class="card__title">Создаю</h2>
+        <p class="card__text">
+          Эта визитка — моя первая живая страница, сделанная с интересом и вдохновением.
+        </p>
+      </article>
+    </section>
+
+    <!-- ===== 3. О проекте ===== -->
+    <section class="about" id="about">
+      <div class="about__inner">
+        <h2 class="about__title">О моей первой страничке</h2>
+        <p class="about__text">
+          Эта визитка создана как пробная работа во время моего знакомства с vibe coding.
+          Здесь я учусь не просто писать код, а собирать настроение, стиль и смысл
+          в одну красивую страницу.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 4. Футер ===== -->
+  <footer class="footer">
+    <p class="footer__text">
+      Сделано Ольгой с любопытством и хорошим настроением ✨
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

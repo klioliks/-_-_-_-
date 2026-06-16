@@ -1,0 +1,554 @@
+/* =============================================
+   Базовые настройки и тёплая цветовая палитра
+   ============================================= */
+
+:root {
+  /* Основные цвета */
+  --color-bg-start: #f7ede3;
+  --color-bg-mid: #e8d4bc;
+  --color-bg-end: #c9a882;
+
+  --color-text: #3d2c22;
+  --color-text-soft: #6b5344;
+  --color-accent: #a67c52;
+  --color-accent-hover: #8f6840;
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 252, 248, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px rgba(100, 70, 40, 0.12);
+
+  /* Скругления и отступы */
+  --radius-sm: 16px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+
+  /* Шрифты */
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+
+  /* Плавность переходов */
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Прогресс распускания цветов (0 → 1), задаётся через JS при прокрутке */
+  --bloom: 0;
+}
+
+/* Сброс и базовая типографика */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  min-height: 100vh;
+
+  /* Бежево-карамельный градиентный фон */
+  background: linear-gradient(
+    145deg,
+    var(--color-bg-start) 0%,
+    var(--color-bg-mid) 45%,
+    var(--color-bg-end) 100%
+  );
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* =============================================
+   Свечение, следующее за курсором
+   ============================================= */
+
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 220, 180, 0.35) 0%,
+    rgba(255, 200, 150, 0.12) 40%,
+    transparent 70%
+  );
+  transition: opacity 0.4s ease;
+  opacity: 0;
+}
+
+/* Показываем свечение только на устройствах с мышью */
+body.has-mouse .cursor-glow {
+  opacity: 1;
+}
+
+/* На телефонах скрываем — там нет курсора */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* =============================================
+   Чернильное растение — колонка на всю высоту экрана
+   (рисунок пользователя + красное распускание)
+   ============================================= */
+
+.scroll-flowers {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  height: 100dvh;
+  width: min(220px, 18vw);
+  padding: 1.25rem 1rem 1.25rem 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  animation: flowersAppear 1.2s ease 0.6s forwards;
+}
+
+/* Мягкая стеклянная рамка вокруг рисунка */
+.vine-frame {
+  height: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 252, 248, 0.38);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 10px 40px rgba(100, 70, 40, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  padding: 0.75rem;
+  overflow: hidden;
+}
+
+/* Обёртка: рисунок + SVG-лепестки поверх */
+.vine-art {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  line-height: 0;
+}
+
+/* Чернильный рисунок — растянут по высоте от верха до низа рамки */
+.vine-art__ink {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center top;
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+
+/* SVG с красными лепестками — масштабируется вместе с рисунком */
+.vine-art__blooms {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Красные лепестки — появляются поверх чернильных цветков на рисунке */
+.flower__bloom {
+  transform-origin: center center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Верхний бутон распускается первым */
+.flower--1 {
+  --local-bloom: clamp(0, calc(var(--bloom) / 0.42), 1);
+}
+
+/* Нижняя лилия — второй этап прокрутки */
+.flower--2 {
+  --local-bloom: clamp(0, calc((var(--bloom) - 0.38) / 0.42), 1);
+}
+
+.flower--1 .flower__bloom,
+.flower--2 .flower__bloom {
+  opacity: var(--local-bloom);
+  transform: scale(calc(0.1 + var(--local-bloom) * 0.9));
+}
+
+@keyframes flowersAppear {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Контент не заезжает под колонку с растением */
+@media (min-width: 901px) {
+  .page {
+    padding-right: calc(min(220px, 18vw) + 1.5rem);
+  }
+
+  .footer {
+    padding-right: calc(min(220px, 18vw) + 1.5rem);
+  }
+}
+
+/* Телефон: статичная картинка, цветы уже красные, без анимации прокрутки */
+@media (max-width: 900px) {
+  .scroll-flowers {
+    --bloom: 1;
+    width: 88px;
+    padding: 0.75rem 0.5rem 0.75rem 0;
+    animation: flowersAppear 1s ease 0.3s forwards;
+  }
+
+  .vine-frame {
+    padding: 0.45rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .flower__bloom {
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-flowers {
+    width: 72px;
+    opacity: 0.88;
+  }
+}
+
+/* =============================================
+   Общая обёртка страницы
+   ============================================= */
+
+.page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+}
+
+/* =============================================
+   1. Главный экран (hero)
+   ============================================= */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  min-height: 85vh;
+  padding: 2rem 0 4rem;
+}
+
+.hero__greeting {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+}
+
+.hero__slogan {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+  margin-bottom: 1.25rem;
+}
+
+.hero__subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text-soft);
+  max-width: 480px;
+  margin-bottom: 2rem;
+}
+
+/* ===== Кнопка ===== */
+
+.btn {
+  display: inline-block;
+  padding: 0.9rem 1.75rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.btn--primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+  box-shadow: 0 4px 20px rgba(140, 90, 50, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.btn--primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(140, 90, 50, 0.4);
+  background: linear-gradient(135deg, #b0885c, var(--color-accent));
+}
+
+.btn--primary:active {
+  transform: translateY(-1px);
+}
+
+/* ===== Студийный портрет ===== */
+
+.hero__photo {
+  display: flex;
+  justify-content: center;
+}
+
+.photo-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(80, 50, 30, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Тёплая подсветка вокруг фото */
+.photo-card__glow {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 210, 160, 0.5) 0%,
+    transparent 65%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+.photo-card__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius-xl);
+}
+
+/* =============================================
+   2. Блок с тремя карточками
+   ============================================= */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 2rem 0 4rem;
+}
+
+.card {
+  /* Glassmorphism */
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.75rem;
+  box-shadow: var(--glass-shadow);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(100, 70, 40, 0.18);
+  background: rgba(255, 252, 248, 0.65);
+}
+
+.card__title {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.card__text {
+  font-size: 0.98rem;
+  color: var(--color-text-soft);
+  line-height: 1.65;
+}
+
+/* =============================================
+   3. Блок «О проекте»
+   ============================================= */
+
+.about {
+  padding: 1rem 0 4rem;
+}
+
+.about__inner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2.5rem;
+  box-shadow: var(--glass-shadow);
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+  transition: box-shadow var(--transition);
+}
+
+.about__inner:hover {
+  box-shadow: 0 12px 40px rgba(100, 70, 40, 0.15);
+}
+
+.about__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.about__text {
+  font-size: 1.05rem;
+  color: var(--color-text-soft);
+  line-height: 1.75;
+}
+
+/* =============================================
+   4. Футер
+   ============================================= */
+
+.footer {
+  text-align: center;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.footer__text {
+  font-size: 0.95rem;
+  color: var(--color-text-soft);
+  opacity: 0.85;
+}
+
+/* =============================================
+   Анимации появления при загрузке
+   ============================================= */
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.9s ease forwards;
+}
+
+.fade-in--delay {
+  animation-delay: 0.25s;
+}
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.fade-in-up--delay-1 {
+  animation-delay: 0.15s;
+}
+
+.fade-in-up--delay-2 {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Анимация при прокрутке (класс добавляется через JS) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =============================================
+   Адаптив: планшет и телефон
+   ============================================= */
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    min-height: auto;
+    padding-top: 1rem;
+    text-align: center;
+  }
+
+  .hero__subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero__photo {
+    order: -1; /* Фото сверху на мобильном */
+  }
+
+  .photo-card {
+    max-width: 320px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .about__inner {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .hero__slogan {
+    font-size: 1.75rem;
+  }
+
+  .btn--primary {
+    width: 100%;
+    text-align: center;
+  }
+}
