@@ -1,11 +1,9 @@
 /**
  * script.js — интерактивность для визитки Ольги
  *
- * Здесь четыре небольшие функции:
  * 1. Свечение, следующее за курсором
  * 2. Плавная прокрутка к блоку «О проекте»
  * 3. Появление блока «О проекте» при прокрутке
- * 4. Распускание чернильных цветов при прокрутке (только на компьютере)
  */
 
 // ===== 1. Свечение за курсором =====
@@ -79,35 +77,4 @@ if (aboutBlock) {
   );
 
   observer.observe(aboutBlock);
-}
-
-// ===== 4. Чернильное растение: распускание при прокрутке (только компьютер) =====
-
-const scrollFlowers = document.getElementById("scrollFlowers");
-
-/** Ширина экрана больше 900px — считаем «компьютером» */
-const isDesktopFlowers = window.matchMedia("(min-width: 901px)").matches;
-
-if (scrollFlowers && isDesktopFlowers) {
-  /**
-   * Считаем, насколько пользователь прокрутил страницу (от 0 до 1)
-   * и передаём это значение в CSS-переменную --bloom.
-   */
-  function updateFlowerBloom() {
-    const scrollTop = window.scrollY;
-    const maxScroll =
-      document.documentElement.scrollHeight - window.innerHeight;
-
-    const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
-    const bloom = Math.min(1, Math.max(0, progress));
-
-    scrollFlowers.style.setProperty("--bloom", bloom.toFixed(3));
-  }
-
-  // Обновляем при прокрутке и при изменении размера окна
-  window.addEventListener("scroll", updateFlowerBloom, { passive: true });
-  window.addEventListener("resize", updateFlowerBloom);
-
-  // Начальное состояние — чёрные бутоны
-  updateFlowerBloom();
 }

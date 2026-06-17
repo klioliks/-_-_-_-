@@ -29,9 +29,6 @@
 
   /* Плавность переходов */
   --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Прогресс распускания цветов (0 → 1), задаётся через JS при прокрутке */
-  --bloom: 0;
 }
 
 /* Сброс и базовая типографика */
@@ -102,135 +99,70 @@ body.has-mouse .cursor-glow {
 }
 
 /* =============================================
-   Чернильное растение — колонка на всю высоту экрана
-   (рисунок пользователя + красное распускание)
+   Декоративный рисунок: луна и цветы
    ============================================= */
 
-.scroll-flowers {
+.site-decor {
   position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  height: 100dvh;
-  width: min(220px, 18vw);
-  padding: 1.25rem 1rem 1.25rem 0;
+  top: 1.5rem;
+  right: -0.5rem;
+  width: min(280px, 24vw);
   pointer-events: none;
-  z-index: 50;
+  z-index: 1;
   opacity: 0;
-  animation: flowersAppear 1.2s ease 0.6s forwards;
+  animation: decorAppear 1.4s ease 0.5s forwards;
 }
 
-/* Мягкая стеклянная рамка вокруг рисунка */
-.vine-frame {
-  height: 100%;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  background: rgba(255, 252, 248, 0.38);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow:
-    0 10px 40px rgba(100, 70, 40, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  padding: 0.75rem;
-  overflow: hidden;
-}
-
-/* Обёртка: рисунок + SVG-лепестки поверх */
-.vine-art {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  line-height: 0;
-}
-
-/* Чернильный рисунок — растянут по высоте от верха до низа рамки */
-.vine-art__ink {
+.site-decor__img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: fill;
-  object-position: center top;
-  mix-blend-mode: multiply;
-  opacity: 0.92;
+  height: auto;
+  opacity: 0.42;
+  filter: drop-shadow(0 4px 18px rgba(60, 30, 20, 0.08));
 }
 
-/* SVG с красными лепестками — масштабируется вместе с рисунком */
-.vine-art__blooms {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-/* Красные лепестки — появляются поверх чернильных цветков на рисунке */
-.flower__bloom {
-  transform-origin: center center;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-/* Верхний бутон распускается первым */
-.flower--1 {
-  --local-bloom: clamp(0, calc(var(--bloom) / 0.42), 1);
-}
-
-/* Нижняя лилия — второй этап прокрутки */
-.flower--2 {
-  --local-bloom: clamp(0, calc((var(--bloom) - 0.38) / 0.42), 1);
-}
-
-.flower--1 .flower__bloom,
-.flower--2 .flower__bloom {
-  opacity: var(--local-bloom);
-  transform: scale(calc(0.1 + var(--local-bloom) * 0.9));
-}
-
-@keyframes flowersAppear {
+@keyframes decorAppear {
   from {
     opacity: 0;
-    transform: translateX(12px);
+    transform: translate(16px, -10px) scale(0.97);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate(0, 0) scale(1);
   }
 }
 
-/* Контент не заезжает под колонку с растением */
-@media (min-width: 901px) {
-  .page {
-    padding-right: calc(min(220px, 18vw) + 1.5rem);
-  }
-
-  .footer {
-    padding-right: calc(min(220px, 18vw) + 1.5rem);
-  }
+/* Контент всегда поверх декора */
+.page,
+.footer {
+  position: relative;
+  z-index: 2;
 }
 
-/* Телефон: статичная картинка, цветы уже красные, без анимации прокрутки */
+/* Планшет и телефон: рисунок внизу справа, мельче и прозрачнее — не мешает тексту */
 @media (max-width: 900px) {
-  .scroll-flowers {
-    --bloom: 1;
-    width: 88px;
-    padding: 0.75rem 0.5rem 0.75rem 0;
-    animation: flowersAppear 1s ease 0.3s forwards;
+  .site-decor {
+    top: auto;
+    bottom: 1.25rem;
+    right: -1rem;
+    width: min(140px, 34vw);
   }
 
-  .vine-frame {
-    padding: 0.45rem;
-    border-radius: var(--radius-sm);
-  }
-
-  .flower__bloom {
-    transition: none;
+  .site-decor__img {
+    opacity: 0.2;
   }
 }
 
+/* Маленький экран: ещё меньше и сильнее уводим в угол */
 @media (max-width: 480px) {
-  .scroll-flowers {
-    width: 72px;
-    opacity: 0.88;
+  .site-decor {
+    bottom: 0.75rem;
+    right: -1.25rem;
+    width: min(110px, 30vw);
+  }
+
+  .site-decor__img {
+    opacity: 0.16;
   }
 }
 
